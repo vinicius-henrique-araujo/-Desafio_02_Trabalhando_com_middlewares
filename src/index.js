@@ -10,19 +10,73 @@ app.use(cors());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  const {username} =  request.headers;
+
+  const user =  users.find(user => user.username === username)
+
+  if(!user){
+    return response.status(404).json({error:"User not Defount"})
+  }
+
+
+  request.user = user;
+  return next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const {user} = request;
+
+  if(user){
+    if(user.pro === false && user.todos.length < 10){
+      request.user = user;
+      return next();
+    }else if(user.pro === true){
+      request.user = user;
+      return next();
+    }else{
+      return response.status(403).json({error:"user with more than 10 todos!"})
+    }
+  }
+
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  const {id} = request.params;
+  const {username} = request.headers;
+  const {user} = request;
+
+  const validateCheck =  validate(id,4);
+  const userCheck =  users.find(user => user.username === username);
+  const userCheckId = users.find(user=> user.id ===id);
+  
+
+  if(!userCheck){
+   return response.status(404).json({error:"Username Not Found!"});
+  }else if(!userCheckId ){
+    return response.status(404).json({error:"user not Defound"})
+  }else if (!validateCheck){
+    return response.status(400).json({error:"uuid not Defound"})
+  }
+
+
+  request.user = user
+  request.todo = user.todo
+  return next();
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  const {id} = request.params;
+  const {user} = request;
+
+  const checkUserId = users.find(user => user.id ===id )
+
+  if(!checkUserId){
+    return response.status(404).json({error:"user not Defound"})
+  }
+
+  request.user = user;
+  return next();
+  
 }
 
 app.post('/users', (request, response) => {
