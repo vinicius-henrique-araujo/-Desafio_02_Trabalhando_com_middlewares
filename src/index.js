@@ -53,7 +53,7 @@ function checksTodoExists(request, response, next) {
   if(!userCheck){
    return response.status(404).json({error:"Username Not Found!"});
   }
-  gitif(!userCheckId ){
+  if(!userCheckId ){
     return response.status(404).json({error:"user not Defound"})
   }
   if (!validateCheck){
